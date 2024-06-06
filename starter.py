@@ -46,17 +46,23 @@ output_lines.append("\n## Transcription:\n")
 for segment in tqdm(segments, desc="Transcribing segments"):
     if segment.words is not None:
         for word in segment.words:
-            line = f"[{word.start:.2f}s -> {word.end:.2f}s] {word.word}"
+            line = f"{word.word}"
             print(line)
             output_lines.append(line)
     else:
-        line = f"[{segment.start:.2f}s -> {segment.end:.2f}s] {segment.text}"
+        line = f"{segment.text}"
         print(line)
         output_lines.append(line)
 
 # Save the transcription to a Markdown file
-output_file = "transcription.md"
+output_file = f"{file}-transcription.md"
+count = 0
 with open(output_file, "w") as f:
-    f.write("\n".join(output_lines))
+    for line in output_lines:
+        count += len(line)
+        if count >= 80:
+            f.write("\n")
+            count = 0
+        f.write(line)
 
 print(f"\nTranscription saved to {output_file}")
